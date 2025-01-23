@@ -6,7 +6,7 @@ const adminValidation=(req,res,next)=>{
         }
         next();
     }catch(err){
-        return res.status(401).json({message:"No se encuentra autenticado"})
+        return res.status(401).json({message:"No se encuentra autenticado como administrador","rol":req.user.rol})
     }
 }
 

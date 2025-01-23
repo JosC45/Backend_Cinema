@@ -1,12 +1,12 @@
 const ServicesKind=require("../services/kindsCServices")
 
-exports.postKind=(req,res)=>{
-    if(true /*es admin*/){
+exports.postKind=async(req,res)=>{
         try{
-            const {tipo}=req.body
-            ServicesKind.addKind(tipo)
+            const {tipo,precio_normal,precio_estreno}=req.body
+            const kindAdded=await ServicesKind.addKind(tipo,precio_normal,precio_estreno)
+            res.status(200).json({message:"Its added suvcesfully","kind":kindAdded})
         }catch(err){
             res.status(400).json({message:"Error en el servidor"})
         }
-    }
 }
+

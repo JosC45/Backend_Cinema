@@ -1,6 +1,6 @@
 const Movies=require("../models/movies")
 const mongoose=require("mongoose")
-
+const Features=require("../models/function")
 // const getMovies=async ()=>{
 //     const listMovies=await Movies.find()
 // }
@@ -64,8 +64,63 @@ class MoviesServices{
             throw new Error(err.message);
         }
     }
+    static async listAllMoviesActivated(){
+        try{
+            const moviesActivate=[]
+            const listMovies=await Movies.find()
+            console.log(listMovies)
+            for(let movies of listMovies){
+                const movieswithFeature=await Features.find({pelicula:movies._id})
+                console.log(movieswithFeature)
+                if(movieswithFeature.length===0){
+                    continue;
+                }
+                moviesActivate.push(movieswithFeature)
+            }
+            console.log(moviesActivate)
+            return moviesActivate
+        }catch(err){
+            throw new Error("Detected error in the Service")
+        }
+    }
+    static async getMoviesActivate(){
+        try{
+            const moviesActivated=[]
+            const movies=await Movies.find()
+            for(let mov of movies){
+                if(mov.estado()==="cartelera"){
+                    moviesActivated.push(mov)
+                }
+            }
+            console.log(moviesActivated)
+            return moviesActivated
+        }catch(err){
+            throw new Error("Error intoService")
+        }
+    }
+    static async getMoviesComingSoon(){
+        try{
+            const comingsoon_Movies=[]
+            const listMovies=await Movies.find()
+            for(let movies of listMovies){
+                if(movies.estado()==="soon"){
+                    comingsoon_Movies.push(movies)
+                }
+            }
+            return comingsoon_Movies
+        }catch(err){
+
+        }
+    }
+    static async getFunctions(id){
+        try{
+            const movieIntoFeature=await Features.find({pelicula:id})
+            console.log(movieIntoFeature)
+            return movieIntoFeature
+        }catch(err){
+            throw new Error("Error into service")
+        }
+    }
 }
-
-
 
 module.exports={MoviesServices}

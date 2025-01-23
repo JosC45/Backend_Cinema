@@ -13,9 +13,7 @@ exports.controllergetMovies=(req,res)=>{
 exports.contAddMovies=async(req,res)=>{
     try{
         const {nombre,sinopsis,duracion,estreno}=req.body
-        console.log(sinopsis)
         const instanceMovie=new MoviesServices()
-        console.log(instanceMovie)
         const movieadded=await instanceMovie.addMovie(nombre,sinopsis,duracion,estreno)
         if(!movieadded){
             return res.status(401).json({message:"No se agrego"})
@@ -44,3 +42,42 @@ exports.contDeleteMovies=async(req,res)=>{
     }
 }
 
+exports.getMoviesActivate=async(req,res)=>{
+    try{
+        const listMovies=await MoviesServices.listAllMoviesActivated()
+        return res.status(200).json({"message":"Listed",listMovies})
+    }catch(err){
+        res.status(400).json({"message":"Error into controller"})
+    }
+}
+
+exports.getMoviesCartelera=async(req,res)=>{
+    try{
+        const moviesActivated=await MoviesServices.getMoviesActivate()
+        console.log(moviesActivated)
+        return res.status(200).json({"message":"Se encontraron las peliculas activadas",moviesActivated})
+    }catch(err){
+        res.status(400).json({"message":"Error into controller"})
+    }
+}
+
+exports.getMoviesComingSoon=async(req,res)=>{
+    try{
+        const comingMovies=await MoviesServices.getMoviesComingSoon()
+        console.log(comingMovies)
+        return res.status(200).json({"message":"It's already exist",comingMovies})
+    }catch(err){
+        res.status(400).json({"message":"Error into controller"})
+    }
+}
+
+exports.getFunctionAboutMovie=async(req,res)=>{
+    try{
+        const id=req.params.id
+        const functions=await MoviesServices.getFunctions(id)
+        console.log(functions)
+        return res.status(200).json({"message":"These are the funtions",functions})
+    }catch(err){
+        res.status(400).json({"message":"Error into controller",err})
+    }
+}

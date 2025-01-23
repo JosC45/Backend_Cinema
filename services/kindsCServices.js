@@ -1,4 +1,4 @@
-const KindsC=require("../models/kinds_of_cinemas")
+const Kinds_of_c=require("../models/kinds_of_cinemas")
 
 class ServicesKind{
     constructor(id,tipo){
@@ -6,17 +6,16 @@ class ServicesKind{
         this.tipo=tipo
     }
 
-    static async addKind(tipo){
+    static async addKind(tipo,precio_normal,precio_estreno){
         try{
-        const newkind=new KindsC(tipo)
+        const newkind=new Kinds_of_c({tipo,precio_normal,precio_estreno})
         await newkind.save()
+        return newkind
         }catch(err){
-            res.status(401).json({message:"No valido el tipo"})
+            throw new Error("Error en el servicio")
         }
     }
-
 }
-
 module.exports=ServicesKind
 
 

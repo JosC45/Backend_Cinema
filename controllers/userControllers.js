@@ -1,5 +1,7 @@
 const {validateUser}=require("../services/userServices")
-const {createUser}=require("../services/userServices")
+const {createUser}=require("../services/userServices") 
+const adminValidation=require("../middlewares/adminValidation")
+const authValidation=require("../middlewares/authValidation")
 
 exports.loginController=(req,res)=>{
     const {id,username,password,rol}=req.body
@@ -9,9 +11,23 @@ exports.loginController=(req,res)=>{
 
 exports.addUser=(req,res)=>{
     try{
-    const {username,email,password,rol}=req.body
-    createUser(username,email,password,rol,res)
+        const {username,email,password,rol}=req.body
+    if(rol==="user"){
+        
+        createUser(username,email,password,rol,res)
+    }
+    else if(rol==="admin"){
+        authValidation(req,res,()=>{
+            adminValidation(req,res,()=>{
+                createUser(username,email,password,rol,res)
+            })
+        })
+        
+    }else{
+        res.status(400).json({message:"No se puede crear usuario con ese rol"})
+    }
+
     }catch(err){
-        res.status(401).json({message:"No se puede crear el usuario con la informacion dada"})
+        res.status(401).json({message:"No se puede crear el usuario con la informacion dada","error":err.message})
     }
 }
