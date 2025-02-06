@@ -4,7 +4,7 @@ const adminValidation=require("../middlewares/adminValidation")
 const authValidation=require("../middlewares/authValidation")
 
 exports.loginController=(req,res)=>{
-    const {id,username,password,rol}=req.body
+    const {username,password}=req.body
 
     validateUser(username,password,res)
 }
@@ -13,7 +13,6 @@ exports.addUser=(req,res)=>{
     try{
         const {username,email,password,rol}=req.body
     if(rol==="user"){
-        
         createUser(username,email,password,rol,res)
     }
     else if(rol==="admin"){
@@ -24,7 +23,7 @@ exports.addUser=(req,res)=>{
         })
         
     }else{
-        res.status(400).json({message:"No se puede crear usuario con ese rol"})
+        res.status(400).json({message:"No se puede crear usuario con ese rol","error":error.message})
     }
 
     }catch(err){

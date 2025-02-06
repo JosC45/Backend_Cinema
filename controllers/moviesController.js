@@ -12,9 +12,9 @@ exports.controllergetMovies=(req,res)=>{
 
 exports.contAddMovies=async(req,res)=>{
     try{
-        const {nombre,sinopsis,duracion,estreno}=req.body
+        const {nombre,imagen,sinopsis,duracion,estreno}=req.body
         const instanceMovie=new MoviesServices()
-        const movieadded=await instanceMovie.addMovie(nombre,sinopsis,duracion,estreno)
+        const movieadded=await instanceMovie.addMovie(nombre,imagen,sinopsis,duracion,estreno)
         if(!movieadded){
             return res.status(401).json({message:"No se agrego"})
         }
@@ -53,11 +53,17 @@ exports.getMoviesActivate=async(req,res)=>{
 
 exports.getMoviesCartelera=async(req,res)=>{
     try{
+        id=req.params.id
+        if(id){
+            const moviesActivated=await MoviesServices.getMoviesActivateById(id)
+            
+            return res.status(200).json({"message":"Se encontraron las peliculas activadas",moviesActivated})
+        }
         const moviesActivated=await MoviesServices.getMoviesActivate()
         console.log(moviesActivated)
         return res.status(200).json({"message":"Se encontraron las peliculas activadas",moviesActivated})
     }catch(err){
-        res.status(400).json({"message":"Error into controller"})
+        res.status(400).json({"message":err.message})
     }
 }
 
@@ -77,6 +83,22 @@ exports.getFunctionAboutMovie=async(req,res)=>{
         const functions=await MoviesServices.getFunctions(id)
         console.log(functions)
         return res.status(200).json({"message":"These are the funtions",functions})
+    }catch(err){
+        res.status(400).json({"message":"Error into controller",err})
+    }
+}
+
+exports.getMoviesIntoCinema=async(req,res)=>{
+    try{
+        const id=req.params.id
+        if(!id){
+            const gettingMovies=await MoviesServices.getMoviesActivate()
+            return res.status(200).json({"message":"Get",gettingMovies})
+        }
+        console.log(id)
+        const gettingMovies=await MoviesServices.getMoviesbyCinema(id)
+        console.log(gettingMovies)
+        res.status(200).json({"message":"Getting Sucesfully",gettingMovies})
     }catch(err){
         res.status(400).json({"message":"Error into controller",err})
     }

@@ -8,16 +8,22 @@ const ubicationRoutes=require("./routes/ubicationRoutes")
 const screenRoutes=require("./routes/screenTypesRoutes")
 const hallRoutes=require("./routes/hallRoutes")
 const featureRoutes=require("./routes/featureRoutes")
+//const mainRoutes=require("./routes/mainRoutes")
+const cors=require("cors")
+
+app.use(cors());
 
 app.use(express.json())
-app.use('/movies',moviesRoutes);
-app.use('/cinemas',cinemaRoutes);
-app.use('/kindsofCinemas',kindsofCRoutes);
-app.use('/users',userRoutes);
-app.use('/ubications',ubicationRoutes);
-app.use('/screenTypes',screenRoutes);
-app.use('/hall',hallRoutes);
-app.use('/features',featureRoutes)
+//app.use('/api/home',mainRoutes)
+app.use('/api/movies',moviesRoutes);
+app.use('/api/cinemas',cinemaRoutes);
+app.use('/api/kindsofCinemas',kindsofCRoutes);
+app.use('/api/users',userRoutes);
+app.use('/api/ubications',ubicationRoutes);
+app.use('/api/screenTypes',screenRoutes);
+app.use('/api/hall',hallRoutes);
+app.use('/api/features',featureRoutes)
+
 
 
 module.exports=app;

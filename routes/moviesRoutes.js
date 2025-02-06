@@ -9,8 +9,9 @@ moviesRoutes.post("/addMovie",authValidation,adminValidation,moviesController.co
 moviesRoutes.put("/updateMovie/:id",authValidation,adminValidation,moviesController.contUpdateMovies)
 moviesRoutes.delete("/deleteMovie/:id",authValidation,adminValidation,moviesController.contDeleteMovies)
 moviesRoutes.get("/getMoviesActivate",moviesController.getMoviesActivate)
-moviesRoutes.get("/getMoviescartelera",moviesController.getMoviesCartelera)
+moviesRoutes.get("/getMoviescartelera/:id?",moviesController.getMoviesCartelera)
 moviesRoutes.get("/getMoviesComingSoon",moviesController.getMoviesComingSoon)
 moviesRoutes.get("/getFunctionsAboutMovies/:id",moviesController.getFunctionAboutMovie)
+moviesRoutes.get("/getMoviesByCinema/:id?",moviesController.getMoviesIntoCinema)
 
 module.exports=moviesRoutes;

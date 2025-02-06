@@ -3,6 +3,7 @@ const mongoose=require("../node_modules/mongoose")
 const jwt=require("../node_modules/jsonwebtoken")
 
 const validateUser=async (username,password,res)=>{
+    console.log(username)
     const findedUser=await User.findOne({username})
 
     if(!findedUser){
@@ -25,7 +26,7 @@ const createUser=async(username,email,password,rol,res)=>{
     await newUser.save()
     res.status(201).json({message:"User created sucesfully",user:newUser})
     }catch(err){
-        res.status(400).json({message:"Ha ocurrido un error con la solicitud","error":err})
+        res.status(400).json({message:"Ha ocurrido un error con la solicitud","error":err.message})
     }
 }
 

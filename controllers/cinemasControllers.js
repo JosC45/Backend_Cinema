@@ -41,3 +41,21 @@ exports.getMovies=async(req,res)=>{
     }
 }
 
+exports.getCinesByDepartment=async(req,res)=>{
+    try{
+        const {id}=req.params
+        if(!id){
+            const resMovies=await Cine.getCines()
+            console.log(resMovies)
+            return res.status(200).json({"message":"Listed totally",resMovies})
+        }
+        const resMovies=await Cine.getCinemasbyDepartment(id)
+        if(!resMovies){
+            res.status(400).json({"message":"No se encontro"})
+        }
+        return res.status(200).json({"message":"Listed correctly",resMovies})
+    }catch(err){
+        res.status(400).json(err)
+    }
+}
+

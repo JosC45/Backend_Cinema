@@ -1,17 +1,18 @@
 const Movies=require("../models/movies")
 const mongoose=require("mongoose")
 const Features=require("../models/function")
+const Hall=require("../models/hall")
 // const getMovies=async ()=>{
 //     const listMovies=await Movies.find()
 // }
 
 class MoviesServices{
-    constructor(nombre,sinopsis,duracion,estreno) {
-        this.nombre=nombre
-        this.sinopsis=sinopsis
-        this.duracion=duracion
-        this.estreno=estreno
-    }
+    // constructor(nombre,sinopsis,duracion,estreno) {
+    //     this.nombre=nombre
+    //     this.sinopsis=sinopsis
+    //     this.duracion=duracion
+    //     this.estreno=estreno
+    // }
     static async getMovies(){
         try{
             const listMovies=await Movies.find()
@@ -20,9 +21,9 @@ class MoviesServices{
             res.status(400).json({message:"Error en el servicio de listar"})
         }
     }
-    async addMovie(nombre,sinopsis,duracion,estreno){
+    async addMovie(nombre,imagen,sinopsis,duracion,estreno){
         try{
-        const newMovie=new Movies({nombre,sinopsis,duracion,estreno})
+        const newMovie=new Movies({nombre,imagen,sinopsis,duracion,estreno})
         await newMovie.save()
         return newMovie
         }catch(err){
@@ -86,6 +87,7 @@ class MoviesServices{
     static async getMoviesActivate(){
         try{
             const moviesActivated=[]
+            
             const movies=await Movies.find()
             for(let mov of movies){
                 if(mov.estado()==="cartelera"){
@@ -94,6 +96,24 @@ class MoviesServices{
             }
             console.log(moviesActivated)
             return moviesActivated
+        }catch(err){
+            throw new Error("Error intoService")
+        }
+    }
+    static async getMoviesActivateById(id){
+        try{
+            const movieActivated=[]
+            console.log(id)
+            const movie=await Movies.findById(id)
+            
+            if(movie.estado()==="cartelera"){
+                console.log(movie)
+                movieActivated.push(movie)
+                return movieActivated
+            }else{
+                throw new Error("No se encuentra en cartelera")
+            }
+            
         }catch(err){
             throw new Error("Error intoService")
         }
@@ -117,6 +137,55 @@ class MoviesServices{
             const movieIntoFeature=await Features.find({pelicula:id})
             console.log(movieIntoFeature)
             return movieIntoFeature
+        }catch(err){
+            throw new Error("Error into service")
+        }
+    }
+    static async getMoviesbyCinema(idCinema){
+        try{
+            const salasintoCinema=await Hall.find({idcine:idCinema})
+            console.log(salasintoCinema)
+            const searchedFeatures=await Promise.all(
+                salasintoCinema.map(async(hall)=>{
+                try{    
+                    const feature=await Features.find({sala:hall._id})
+                    
+                        return feature
+                    
+                }catch(err){
+                    throw new Error("Error en la promesa",err)
+                }
+            })
+            
+                // salasintoCinema.forEach(async(hall)=>{
+                //     const feature=await Features.find({sala:hall._id})
+                //     if(feature.length!==0){
+                //         return feature
+                //     }
+                // })
+        ).then(features => features.flat());
+        console.log(searchedFeatures)
+        
+            // let listFeatures
+            // for(let searched of searchedFetaures){
+            //     if(searched.length!==0){
+            //         listFeatures.push(searched)
+            //     }
+            // }
+            const finallyMovies=await Promise.all(searchedFeatures.map(async(features)=>{
+                try{
+                    const films=await Movies.findById(features.pelicula)
+                    
+                    if(films.estado()==="cartelera"){
+                        return films
+                    }
+                    
+                }catch(err){
+                    console.error("error",err)
+                    throw new Error("Error en el finally Movies",err)
+                }
+            })).then(movies=>movies.flat())
+            return finallyMovies
         }catch(err){
             throw new Error("Error into service")
         }

@@ -69,6 +69,17 @@ class Cine{
             throw new Error("Erro al conseguir las peliculas")
         }
     }
+    static async getCinemasbyDepartment(id){
+        try{
+            const listCinemas=await Cinema.find({provincia:id})
+        if(!listCinemas){
+            throw new Error("No se econtro ningun cine")
+        }
+        return listCinemas
+        }catch(err){
+            throw new Error("Error into service")
+        }
+    }
     
     
 }
